@@ -1,19 +1,21 @@
 defmodule GetawaysWeb.Resolvers.Vacation do
   alias Getaways.Vacation
+  alias Getaways.Vacation.Place
 
-  def places(x, y, z) do
+  @spec places(any, any, any) :: {:ok, [Getaways.Vacation.Place.t(), ...]}
+  def places(_root, _args, _info) do
     places = [
-      %Getaways.Vacation.Place{
+      %Place{
         id: 1,
         location: "2Portugal",
         name: "Sand Castle"
       },
-      %Getaways.Vacation.Place{
+      %Place{
         id: 2,
         location: "Canada",
         name: "Blue Igloo"
       },
-      %Getaways.Vacation.Place{
+      %Place{
         id: 3,
         location: "Switzerland",
         name: "Ski Cabin"
@@ -24,7 +26,23 @@ defmodule GetawaysWeb.Resolvers.Vacation do
     {:ok, places}
   end
 
-  def place(_, %{id: id}, _) do
+  @spec create_place(
+          any,
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any},
+          any
+        ) :: {:error, <<_::168>>} | {:ok, any}
+  def create_place(_root, args, _info) do
+    case Getaways.Vacation.create_place(args) do
+      {:ok, place} ->
+        {:ok, place}
+
+      _error ->
+        {:error, "could not create link"}
+    end
+  end
+
+  @spec place(any, %{id: any}, any) :: {:ok, any}
+  def place(_root, %{id: id}, _info) do
     {:ok, Vacation.get_place!(id)}
   end
 end
