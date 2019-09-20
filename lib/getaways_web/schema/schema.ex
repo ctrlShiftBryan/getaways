@@ -15,6 +15,14 @@ defmodule GetawaysWeb.Schema.Schema do
   end
 
   mutation do
+    field :update_places, list_of(:place) do
+      arg(:places, list_of(non_null(:place_update)))
+      # arg(:location, non_null(:string))
+      # arg(:max_guests, non_null(:integer))
+
+      resolve(&GetawaysWeb.Resolvers.Vacation.update_places/3)
+    end
+
     field :create_place, :place do
       arg(:name, non_null(:string))
       arg(:location, non_null(:string))
@@ -22,6 +30,11 @@ defmodule GetawaysWeb.Schema.Schema do
 
       resolve(&GetawaysWeb.Resolvers.Vacation.create_place/3)
     end
+  end
+
+  input_object :place_update do
+    field :id, non_null(:id)
+    field :name, non_null(:string)
   end
 
   object :place do
